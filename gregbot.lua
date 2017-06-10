@@ -75,7 +75,7 @@ client:on('ready', function()
 end)
 
 client:on('heartbeat', function()
-	if os.time() >= nextrand and randommessage then
+	if randommessage and os.time() >= nextrand then
 		gregchannel:sendMessage(randomtext(greg))
 		nextrand = os.time()+math.random(randomtime.min,randomtime.max)
 	end
