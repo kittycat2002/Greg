@@ -6,6 +6,7 @@ cooldown = 5
 mentioncooldown = 120
 chance = 0.1
 randomtime = {min=60,max=600}
+randommessage = false
 
 lastsent = os.time()-cooldown
 lastmention = os.time()-mentioncooldown
@@ -67,13 +68,15 @@ local function sendMessage(sendmessage,channel)
 end
 client:on('ready', function()
 	print("bot connected to discord with id "..client.user.id)
-	gregchannel = client:getGuild('216411946017095693'):getChannel('322400629907652629')
-	nextrand = os.time() + math.random(randomtime.min,randomtime.max)
+	if randommessage then
+		gregchannel = client:getGuild('216411946017095693'):getChannel('322400629907652629')
+		nextrand = os.time() + math.random(randomtime.min,randomtime.max)
+	end
 end)
 
 client:on('heartbeat', function()
-	if os.time() >= nextrand then
-		gregchannel:sendMessage(randomtext(greg),message.channel)
+	if os.time() >= nextrand and randommessage then
+		gregchannel:sendMessage(randomtext(greg))
 		nextrand = os.time()+math.random(randomtime.min,randomtime.max)
 	end
 end)
