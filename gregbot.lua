@@ -54,10 +54,8 @@ end
 
 local function randomtext(tab)
 	rand = math.random(1,tab.num)
-	print(rand)
 	for i=1,#tab-1 do
 		if rand <= tab[i].max then
-			print(tab[i].text)
 			return tab[i].text
 		end
 	end
