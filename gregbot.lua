@@ -14,46 +14,54 @@ if math.floor(chance) ~= chance then
 end
 
 greg = {
-	"Greg.",
-	"Greg!!!",
-	"Greg!",
-	"Greg. Greg? Greg greg.",
-	"Greg.",
-	"Greg. Greg! GREG!",
-	"Greg...",
-	"Greg...Greg greg greeeg!",
-	"Greg.",
-	"Greg. Greg.",
-	"Greg?",
-	"Greg. Greeeeg greg greg Greg?",
-	"Greg!?",
-	"Greg. Greg.",
-	"Gregggggga gregga greg greg.",
-	"Greg!? Greg. Gregga.",
-	"Greg. Gregogreg.",
-	"....greg. Greg! GREG!",
-	"...donkey...",
-	"...greg...",
-	"...Gregga greg gregga gregga.",      
-	"Greg.",
-	"Greg!!!",
-	"Greg!",
-	"Greg. Greg? Greg greg.",
-	"Greg.",
-	"Greg. Greg! GREG!",
-	"Greg...",
-	"Greg...Greg greg greeeg!",
-	"Greg.",
-	"Greg. Greg."
+	{text="Greg.",weight=7},
+	{text="Greg!!!",weight=2},
+	{text="Greg. Greg? Greg greg.",weight=2},
+	{text="Greg. Greg! GREG!",weight=2},
+	{text="Greg...",weight=2},
+	{text="Greg...Greg greg greeeg!",weight=2},
+	{text="Greg. Greg.",weight=3},
+	{text="Greg?",weight=1},
+	{text="Greg. Greeeeg greg greg Greg?",weight=1},
+	{text="Greg!?",weight=1},
+	{text="Gregggggga gregga greg greg.",weight=1},
+	{text="Greg!? Greg. Gregga.",weight=1},
+	{text="Greg. Gregogreg.",weight=1},
+	{text="....greg. Greg! GREG!",weight=1},
+	{text="...donkey...",weight=1},
+	{text="...greg...",weight=1},
+	{text="...Gregga greg gregga gregga.",weight=1},
+	{text="Greg!",weight=1}
 }
 rainbow = {
-	"....greg. Greg! GREG!",
-	"Greg!!!",
-	"Greg!",
-	"Greg. Greg! GREG!",
-	"Greg...Greg greg greeeg!"
+	{text="....greg. Greg! GREG!",weight=1},
+	{text="Greg!!!",weight=1},
+	{text="Greg!",weight=1},
+	{text="Greg. Greg! GREG!",weight=1},
+	{text="Greg...Greg greg greeeg!",weight=1}
 }
 
+greg.num = 0
+for i=1,#greg-1 do
+	greg.num = greg.num + greg[i].weight
+	greg[i].max = greg.num
+end
+rainbow.num = 0
+for i=1,#rainbow-1 do
+	rainbow.num = rainbow.num + rainbow[i].weight
+	rainbow[i].max = rainbow.num
+end
+
+local function randomtext(tab)
+	rand = math.random(1,tab.num)
+	print(rand)
+	for i=1,#tab-1 do
+		if rand <= tab[i].max then
+			print(tab[i].text)
+			return tab[i].text
+		end
+	end
+end
 local function sendMessage(sendmessage,channel)
 	channel:broadcastTyping()
 	timer.sleep(#sendmessage*50)
@@ -67,7 +75,7 @@ end)
 
 client:on('heartbeat', function()
 	if os.time() >= nextrand then
-		gregchannel:sendMessage(greg[math.random(1,#greg)])
+		gregchannel:sendMessage(randomtext(greg),message.channel)
 		nextrand = os.time()+math.random(randomtime.min,randomtime.max)
 	end
 end)
@@ -76,15 +84,15 @@ client:on('messageCreate', function(message)
 	if not message.author.bot then
 		if os.time()-cooldown >= lastsent and (string.sub(tostring(message.channel),19,-1) == "greg" or string.sub(tostring(message.channel),19,-1) == "shitpost") and string.find(message.content,"[Rr]+[Aa]+[Ii]+[Nn]+[Bb]+[Oo]+[Ww]+") then
 			lastsent = os.time()
-			sendMessage(rainbow[math.random(1,#rainbow)],message.channel)
+			sendMessage(randomtext(rainbow),message.channel)
 		elseif os.time()-cooldown >= lastsent and (string.sub(tostring(message.channel),19,-1) == "greg" or string.sub(tostring(message.channel),19,-1) == "shitpost") and string.find(message.content,"[Gg]+[Rr]+[Ee]+[Gg]+") then
 			lastsent = os.time()
-			sendMessage(greg[math.random(1,#greg)],message.channel)
+			sendMessage(randomtext(greg),message.channel)
 		elseif (math.random(1,100*chancemult)/chancemult) <= chance and (string.sub(tostring(message.channel),19,-1) == "greg" or string.sub(tostring(message.channel),19,-1) == "general" or string.sub(tostring(message.channel),19,-1) == "shitpost") then
-			sendMessage(greg[math.random(1,#greg)],message.channel)
+			sendMessage(randomtext(greg),message.channel)
 		elseif os.time()-mentioncooldown >= lastmention and message:mentionsObject(client.user) then
 			lastmention = os.time()
-			sendMessage(greg[math.random(1,#greg)],message.channel)
+			sendMessage(randomtext(greg),message.channel)
 			
 		end
 	end
